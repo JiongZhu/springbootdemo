@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhxy.mapper.CustomersMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.zhxy.entity.Customers">
+        <id column="custId" property="custId" />
+        <result column="custName" property="custName" />
+        <result column="custAddress" property="custAddress" />
+        <result column="custCity" property="custCity" />
+        <result column="custState" property="custState" />
+        <result column="custZip" property="custZip" />
+        <result column="custCountry" property="custCountry" />
+        <result column="custContact" property="custContact" />
+        <result column="custEmail" property="custEmail" />
+    </resultMap>
+
+    <resultMap id="CustomerAndProductsMap" type="com.zhxy.entity.Customers" extends="BaseResultMap">
+        <collection property="ordersList" ofType="com.zhxy.entity.Orders">
+            <id column="orderNum" property="orderNum" />
+            <result column="orderDate" property="orderDate" />
+            <result column="custId" property="custId" />
+            <association property="customers" javaType="com.zhxy.entity.Customers">
+                <id column="custId" property="custId" />
+                <result column="custName" property="custName" />
+                <result column="custAddress" property="custAddress" />
+                <result column="custCity" property="custCity" />
+                <result column="custState" property="custState" />
+                <result column="custZip" property="custZip" />
+                <result column="custCountry" property="custCountry" />
+                <result column="custContact" property="custContact" />
+                <result column="custEmail" property="custEmail" />
+            </association>
+            <collection property="orderitems" ofType="com.zhxy.entity.Orderitems">
+                <id column="orderNum" property="orderNum" />
+                <id column="orderItem" property="orderItem" />
+                <result column="prodId" property="prodId" />
+                <result column="quantity" property="quantity" />
+                <result column="itemPrice" property="itemPrice" />
+                <association property="products" javaType="com.zhxy.entity.Products">
+                    <id column="prodId" property="prodId" />
+                    <result column="vendId" property="vendId" />
+                    <result column="prodName" property="prodName" />
+                    <result column="prodPrice" property="prodPrice" />
+                    <result column="prodDesc" property="prodDesc" />
+                </association>
+            </collection>
+        </collection>
+    </resultMap>
+    <!-- 多对多全查 -->
+    <select id="findCustomerProducts" resultMap="CustomerAndProductsMap">
+        SELECT c.*, o.*, oi.*, p.*
+        FROM customers AS c
+		LEFT OUTER JOIN orders AS o ON o.custId = c.custId
+		LEFT OUTER JOIN orderitems AS oi ON oi.orderNum = o.orderNum
+		LEFT OUTER JOIN products AS p ON p.prodId = oi.prodId
+    </select>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        custId, custName, custAddress, custCity, custState, custZip, custCountry, custContact, custEmail
+    </sql>
+
+</mapper>

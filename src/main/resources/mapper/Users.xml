@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhxy.mapper.UsersMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.zhxy.entity.Users">
+        <id column="Id" property="Id" />
+        <result column="userNo" property="userNo" />
+        <result column="userName" property="userName" />
+        <result column="userPass" property="userPass" />
+        <result column="sex" property="sex" />
+        <result column="age" property="age" />
+        <result column="phone" property="phone" />
+        <result column="address" property="address" />
+    </resultMap>
+
+    <select id="selectPageByAge" resultType="com.zhxy.entity.Users">
+      SELECT * FROM users WHERE age=#{age}
+    </select>
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        Id, userNo, userName, userPass, sex, age, phone, address
+    </sql>
+
+</mapper>

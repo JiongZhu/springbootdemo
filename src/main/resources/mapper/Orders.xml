@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhxy.mapper.OrdersMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.zhxy.entity.Orders">
+        <id column="orderNum" property="orderNum" />
+        <result column="orderDate" property="orderDate" />
+        <result column="custId" property="custId" />
+    </resultMap>
+
+    <resultMap id="OrdersCustomersResultMap" type="com.zhxy.entity.Orders" extends="BaseResultMap">
+        <association property="customers" javaType="com.zhxy.entity.Customers">
+            <id column="custId" property="custId" />
+            <result column="custName" property="custName" />
+            <result column="custAddress" property="custAddress" />
+            <result column="custCity" property="custCity" />
+            <result column="custState" property="custState" />
+            <result column="custZip" property="custZip" />
+            <result column="custCountry" property="custCountry" />
+            <result column="custContact" property="custContact" />
+            <result column="custEmail" property="custEmail" />
+        </association>
+    </resultMap>
+
+    <resultMap id="OrdersAndOrderItemsResultMap" type="com.zhxy.entity.Orders" extends="OrdersCustomersResultMap">
+        <collection property="orderitems" ofType="com.zhxy.entity.Orderitems">
+            <id column="orderNum" property="orderNum" />
+            <result column="orderItem" property="orderItem" />
+            <result column="prodId" property="prodId" />
+            <result column="quantity" property="quantity" />
+            <result column="itemPrice" property="itemPrice" />
+        </collection>
+    </resultMap>
+
+    <!-- 一对一全查 -->
+    <select id="findOrdersCustomersMap" resultMap="OrdersCustomersResultMap">
+        SELECT o.orderNum,o.orderDate,c.*
+        FROM orders AS o
+        LEFT OUTER JOIN customers AS c ON c.custId = o.custId
+    </select>
+
+    <!-- 一对多全查 -->
+    <select id="findOrdersAndItemsMap" resultMap="OrdersAndOrderItemsResultMap">
+        SELECT o.orderNum,o.orderDate,c.*,oi.orderItem,oi.prodId,oi.quantity,oi.itemPrice
+        FROM orders AS o
+        LEFT OUTER JOIN customers AS c ON c.custId = o.custId
+        LEFT OUTER JOIN orderitems AS oi ON oi.orderNum = o.orderNum
+    </select>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        orderNum, orderDate, custId
+    </sql>
+
+</mapper>

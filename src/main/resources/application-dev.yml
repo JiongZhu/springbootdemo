@@ -1,0 +1,66 @@
+server:
+    port: 8080
+    context-path: /
+    error:
+      path: /error
+
+#spring
+spring:
+  devtools:
+    restart:
+      enabled: true     #这里是为了热部署的，与mybatis是无关的
+
+  #DATABASE CONFIG
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    username: root
+    password: zhxy
+    url: jdbc:mysql://localhost:3306/jiongzhu?useUnicode=true&characterEncoding=utf-8&useSSL=false
+    type: com.alibaba.druid.pool.DruidDataSource
+    #druid
+    initial-size: 1
+    max-active: 10
+    max-wait: 60000
+    min-idle: 1
+    time-between-eviction-runs-millis: 60000
+    min-evictable-idle-time-millis: 300000
+    validation-query: SELECT 1
+    test-while-idle: true
+    test-on-borrow: false
+    test-on-return: false
+    pool-prepared-statements: true
+    max-open-prepared-statements: 20
+    connection-properties: druid.stat.merggSql=ture;druid.stat.slowSqlMillis=5000
+    filters: stat,log4j2
+  thymeleaf:
+    prefix: classpath:/templates/views/back/
+    #suffix: .html
+    #mode: HTML5
+    #encoding: UTF-8
+    #content-type: text/html
+    #注释的部分是Thymeleaf默认的配置，如有其它需求可以自行更改
+    cache: false #开发环境关闭以实现热部署，生产环境建议打开
+
+#mybatis-plus
+mybatis-plus:
+  mapper-locations: classpath:/mapper/*.xml   #把xml文件放在com.XX.mapper.*中可能会出现找到的问题，这里把他放在resource下的mapper中
+  #实体扫描，多个package用逗号或者分号分隔
+  typeAliasesPackage: com.zhxy.entity  #这里是实体类的位置
+  global-config:
+      #主键类型  0:"数据库ID自增", 1:"用户输入ID",2:"全局唯一ID (数字类型唯一ID)", 3:"全局唯一ID UUID";
+      id-type: 0
+      #字段策略 0:"忽略判断",1:"非 NULL 判断"),2:"非空判断"
+      field-strategy: 0
+      #驼峰下划线转换
+      db-column-underline: false
+      #刷新mapper 调试神器
+      refresh-mapper: true
+      #数据库大写下划线转换
+      #capital-mode: true
+  configuration:
+    map-underscore-to-camel-case: false
+    cache-enabled: false
+
+#logging
+logging:
+  config: classpath:log4j2.xml

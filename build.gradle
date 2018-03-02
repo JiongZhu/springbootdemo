@@ -1,0 +1,91 @@
+buildscript {
+	ext {
+		springBootVersion = '1.5.9.RELEASE'
+	}
+	repositories {
+		mavenCentral()
+	}
+	dependencies {
+		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+	}
+}
+
+apply plugin: 'java'
+apply plugin: 'idea'
+apply plugin: 'org.springframework.boot'
+
+group = 'com.zhxy'
+version = '0.0.1-SNAPSHOT'
+//编码环境jdk版本
+sourceCompatibility = 1.8
+//编译时jdk版本
+targetCompatibility = 1.8
+//设置编码
+tasks.withType(JavaCompile) {
+	options.encoding = 'UTF-8'
+}
+
+repositories {
+	mavenLocal()    //maven本地仓库
+	maven { url "http://maven.aliyun.com/nexus/content/groups/public/" }  //maven国内阿里镜像
+	maven { url "http://uk.maven.org/maven2/" }  //maven英国仓库
+	jcenter()
+	mavenCentral()  //maven中央仓库
+}
+
+//依赖排除
+configurations {
+	compile.exclude group:"org.springframework.boot",module: "spring-boot-starter-logging"
+}
+
+dependencies {
+	//和Maven类似，gradle导入依赖包也可以定义其作用的生命周期：
+	//compile：编译时必须。
+	//providedCompile : 编译时必须，不会写入war。
+	//runtime：运行时必须，包括编译时。
+	//testCompile：测试编译时必须。
+	//testRuntime：测试运行时必须，包括编译时。
+	//注：此外配置依赖包，还可以模块化配置、导入list、配置是否传递等。
+	compile(
+			//thymeleaf
+			'org.springframework.boot:spring-boot-starter-thymeleaf',
+			//web
+			'org.springframework.boot:spring-boot-starter-web',
+			//aop
+			'org.springframework.boot:spring-boot-starter-aop',
+			//mybatis plus
+			'com.baomidou:mybatisplus-spring-boot-starter:1.0.5',
+			'com.baomidou:mybatis-plus:2.1.8',
+			//druid datasource
+			'com.alibaba:druid:1.1.6',
+			//fastjson
+			'com.alibaba:fastjson:1.2.46',
+			//commons-logging
+			'commons-logging:commons-logging:1.2',
+			//log4j
+			'org.apache.logging.log4j:log4j-api:2.10.0',
+			'org.apache.logging.log4j:log4j-core:2.10.0',
+			'org.apache.logging.log4j:log4j-slf4j-impl:2.10.0',
+			'org.apache.logging.log4j:log4j-web:2.10.0',
+			//velocity
+			'org.apache.velocity:velocity-engine-core:2.0'
+	)
+	compileOnly('org.projectlombok:lombok')
+	runtime(
+			//mysql
+			'mysql:mysql-connector-java',
+			'org.springframework.boot:spring-boot-devtools'
+	)
+	testCompile('org.springframework.boot:spring-boot-starter-test')
+}
+
+// 在这个段落中你可以声明编译后的Jar文件信息
+jar {
+	baseName = 'springbootdemo'
+	version = '0.0.1-SNAPSHOT'
+}
+
+bootRun {
+//开启页面热加载功能
+	addResources = true
+}
